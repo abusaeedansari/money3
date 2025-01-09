@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Money3: Money Math Quiz</title>
+<link rel="icon" href="rupee.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight-green: #073b3a;
+  --dartmouth-green: #0b6e4f;
+  --dark-purple: #331832;
+  --platinum: #e2e2e2;
+  --timberwolf: #d7cdcc;
+}
+
+body {
+  margin: 0; padding: 0;
+  font-family: "Roboto", sans-serif;
+  background: var(--timberwolf);
+  color: #333;
+}
+
+header {
+  background: var(--midnight-green);
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+  letter-spacing: 1px;
+}
+
+.container {
+  max-width: 700px; 
+  margin: 20px auto; 
+  background: #fff; 
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+  overflow: hidden; 
+  padding: 20px; 
+  margin-bottom: 40px;
+}
+
+.intro, .quiz-area, .result-area { display: none; }
+.active { display: block; }
+
+.intro p {
+  font-size: 1.1em; 
+  line-height:1.6em; 
+  text-align: center;
+}
+
+.name-input, .input-group { margin: 20px 0; }
+
+input[type="text"], input[type="number"], select {
+  padding: 10px; 
+  width: 100%; 
+  box-sizing: border-box;
+  margin-bottom: 15px; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  font-size: 1.1em;
+}
+
+.button {
+  background: var(--dartmouth-green); 
+  color: #fff; 
+  padding: 12px 24px; 
+  border: none; 
+  border-radius:5px;
+  cursor: pointer; 
+  font-size: 1.1em; 
+  margin: 5px; 
+  display: inline-block; 
+  font-family:"Roboto", sans-serif;
+  transition: background 0.3s ease; 
+  text-align:center;
+}
+
+.button:hover { background: var(--dark-purple); }
+
+.top-info {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom:20px; 
+  flex-wrap: wrap;
+}
+
+.timer, .scoreboard {
+  font-size: 1.1em; 
+  font-weight: bold; 
+  font-family:"Roboto", sans-serif; 
+  color: var(--dartmouth-green);
+}
+
+.progress-bar {
+  flex:1; 
+  background:#ddd; 
+  height:8px; 
+  border-radius:4px; 
+  margin:0 10px; 
+  position:relative; 
+  overflow:hidden;
+}
+
+.progress-fill {
+  background: var(--dartmouth-green); 
+  width:0%; 
+  height:100%; 
+  transition:width 0.3s;
+}
+
+.info-msg {
+  font-size:1.1em; 
+  margin-bottom:20px; 
+  text-align:center; 
+  font-weight:bold; 
+  color:var(--dark-purple); 
+  display:none;
+}
+
+.question-count {
+  font-weight: bold; 
+  margin-bottom: 10px; 
+  font-size: 1.2em; 
+  text-align:center; 
+  font-family:"Roboto", sans-serif; 
+  color:#333;
+}
+
+.question-text {
+  margin-bottom: 20px; 
+  font-size: 1.3em; 
+  text-align:center; 
+  font-weight:bold; 
+  font-family:"Roboto", sans-serif; 
+  color:#333;
+  padding:0 10px;
+}
+
+.answers {
+  margin-bottom: 20px; 
+  display: none;
+}
+
+.answers label {
+  display: block; 
+  margin-bottom:10px; 
+  font-size:1.1em; 
+  cursor: pointer;
+  background: #fafafa; 
+  padding:10px; 
+  border-radius:5px; 
+  transition:background 0.3s ease; 
+  border:1px solid #ddd;
+  max-width:300px; 
+  margin:10px auto; 
+  text-align:left;
+}
+
+.answers label:hover { background:#eee; }
+
+.answers input[type=radio] { margin-right:8px; }
+
+.textbox-wrapper {
+  text-align:center; 
+  margin-bottom:20px; 
+  display:none;
+}
+
+.textbox-wrapper input[type="number"] {
+  width: 180px; 
+  padding: 10px; 
+  font-size:1.1em; 
+  border:1px solid #ccc; 
+  border-radius:5px;
+}
+
+.feedback {
+  font-size:1.1em; 
+  margin-bottom:20px; 
+  padding:10px; 
+  border-radius:5px; 
+  text-align:center; 
+  font-weight:bold;
+  max-width:300px; 
+  margin:20px auto; 
+  display:none;
+}
+
+.feedback.correct {
+  background:#d5f8d0; 
+  border:1px solid #9ed98b; 
+  color:#333;
+}
+
+.feedback.incorrect {
+  background:#fcdcdc; 
+  border:1px solid #e5a5a5; 
+  color:#333;
+}
+
+.explanation {
+  font-size:1.1em; 
+  margin-bottom:20px; 
+  text-align:left; 
+  font-style: italic; 
+  color:#555; 
+  max-width:600px;
+  margin:10px auto; 
+  background:#fff8e6; 
+  border:1px solid #f6d77a; 
+  border-radius:5px; 
+  padding:15px; 
+  display:none;
+}
+
+.result-area { 
+  text-align: center; 
+}
+
+.result-area h2 {
+  font-size: 2em;
+  color: var(--dartmouth-green);
+  margin-bottom: 20px;
+}
+
+.result-area p { 
+  margin: 10px 0; 
+  font-size: 1.2em;
+  color: var(--dartmouth-green);
+}
+
+footer {
+  text-align:center; 
+  color:#030303; 
+  margin:20px 0; 
+  font-size:1em;
+}
+
+@media(max-width:600px){
+  .question-text { font-size:1.1em; }
+  .answers label { font-size:1em; width:100%; }
+  .explanation { font-size:1em; }
+}
+</style>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+<header>
+  <h1>Money3: Money Math Quiz</h1>
+</header>
+
+<div class="container">
+  <div class="intro active" id="intro">
+    <h2 style="font-family:'Roboto', sans-serif; font-size:1.6em; text-align:center;">Welcome!</h2>
+    <p>
+      Practice addition and subtraction of money.<br>
+      You have <strong>30 minutes</strong> to answer <strong>50 questions</strong>. Good luck!
+    </p>
+    <div class="input-group">
+      <input type="text" id="playerName" placeholder="Your Name" />
+      <select id="division">
+        <option value="" disabled selected>Select Division</option>
+        <option value="A">Division A</option>
+        <option value="B">Division B</option>
+      </select>
+      <input type="number" id="rollNo" placeholder="Enter Roll Number" />
+    </div>
+    <button class="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div class="quiz-area" id="quiz-area">
+    <div class="top-info">
+      <div class="timer" id="timer">Time: 30:00</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="scoreboard" id="scoreboard">Score: 0</div>
+    </div>
+
+    <div id="infoMsg" class="info-msg"></div>
+
+    <div class="question-count" id="question-count"></div>
+    <div class="question-text" id="question-text"></div>
+
+    <!-- MCQ options -->
+    <div class="answers" id="answers"></div>
+
+    <!-- Text answer -->
+    <div class="textbox-wrapper" id="textbox-wrapper">
+      <input type="number" id="answerBox" step="0.01" placeholder="Type your answer" />
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="explanation" id="explanation"></div>
+
+    <div style="text-align:center;">
+      <button class="button" id="mainBtn" onclick="mainButtonClicked()">Check Answer</button>
+    </div>
+  </div>
+
+  <div class="result-area" id="result-area">
+    <h2>Quiz Completed!</h2>
+    <p id="final-message"></p>
+    <p id="final-score"></p>
+    <p>Your record is saved.</p>
+  </div>
+</div>
+
+<footer>
+  <p>Keep up the great work!</p>
+</footer>
+
+<script>
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyB-RDLOoTlaio0VgtFh7eencMr9ekdFEEk",
+  authDomain: "test-app-1-6ade5.firebaseapp.com",
+  databaseURL: "https://test-app-1-6ade5-default-rtdb.firebaseio.com",
+  projectId: "test-app-1-6ade5",
+  storageBucket: "test-app-1-6ade5.firebasestorage.app",
+  messagingSenderId: "938447574937",
+  appId: "1:938447574937:web:65c1c53a12c665988b2508",
+  measurementId: "G-FKNLFZH4G9"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// Utility functions
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+function pad(num){return num<10 ? "0"+num : num;}
+function randomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function randomFloat(min, max, decimals) {
+  const str = (Math.random() * (max - min) + min).toFixed(decimals);
+  return parseFloat(str);
+}
+
+// Pronoun mapping
+const namePronouns = {
+  "Anushka": "she",
+  "Sangeeta": "she",
+  "Pranav": "he",
+  "Mrs Singh": "she",
+  "Sumita": "she",
+  "Javed": "he",
+  "Archana": "she",
+  "Mrs Sinha": "she",
+  "Mrs Saxena": "she",
+  "Isha": "she",
+  "Meenu": "she",
+  "Raj": "he"
+};
+
+function showInfo(msg){
+  const infoEl = document.getElementById("infoMsg");
+  infoEl.textContent = msg;
+  infoEl.style.display = "block";
+}
+function hideInfo(){
+  const infoEl = document.getElementById("infoMsg");
+  infoEl.textContent = "";
+  infoEl.style.display = "none";
+}
+
+// Generate distractors
+function getDistractors(correct, count, varyRange) {
+  let distractors = [];
+  while(distractors.length < count){
+    let variation = Math.random() < 0.5 ? -1 : 1;
+    let d = correct + variation * randomFloat(0.50, varyRange, 2);
+    d = parseFloat(d.toFixed(2));
+    if(d > 0 && d !== correct && !distractors.includes(d)){
+      distractors.push(d);
+    }
+  }
+  return distractors;
+}
+
+// Generate question objects
+function buildQuestionAddition(){
+  let a = randomFloat(10.00, 999.99, 2);
+  let b = randomFloat(10.00, 999.99, 2);
+  let correct = parseFloat((a + b).toFixed(2));
+  let question = `Arrange vertically and add the following:<br>₹ ${a.toFixed(2)} + ₹ ${b.toFixed(2)}`;
+  let distractors = getDistractors(correct,3,100.00);
+  return buildQuestion(question, correct, distractors, `${a.toFixed(2)} + ${b.toFixed(2)} = ₹ ${correct.toFixed(2)}`);
+}
+
+function buildQuestionSubtraction(){
+  let a = randomFloat(10.00, 999.99, 2);
+  let b = randomFloat(10.00, a, 2);
+  let correct = parseFloat((a - b).toFixed(2));
+  let question = `Arrange vertically and subtract the following:<br>₹ ${a.toFixed(2)} - ₹ ${b.toFixed(2)}`;
+  let distractors = getDistractors(correct,3,100.00);
+  return buildQuestion(question, correct, distractors, `${a.toFixed(2)} - ${b.toFixed(2)} = ₹ ${correct.toFixed(2)}`);
+}
+
+function buildQuestionStoryAddition(){
+  const scenarios = [
+    "purchased",
+    "spent",
+    "bought",
+    "paid for",
+    "acquired"
+  ];
+  let names = ["Anushka", "Sangeeta", "Pranav", "Mrs Singh", "Sumita", "Javed"];
+  let items1 = ["a greeting card", "a t-shirt", "marble papers", "a book", "a pencil", "a chocolate bar"];
+  let items2 = ["a notebook", "a pair of socks", "groceries", "snacks", "handkerchiefs", "gloves"];
+  let name = names[randomInt(0, names.length -1)];
+  let item1 = items1[randomInt(0, items1.length -1)];
+  let item2 = items2[randomInt(0, items2.length -1)];
+  let cost1 = randomFloat(10.00, 500.00, 2);
+  let cost2 = randomFloat(10.00, 500.00, 2);
+  let correct = parseFloat((cost1 + cost2).toFixed(2));
+  let pronoun = namePronouns[name];
+  let question = `${name} ${scenarios[randomInt(0, scenarios.length -1)]} ₹ ${cost1.toFixed(2)} for ${item1} and ₹ ${cost2.toFixed(2)} for ${item2}. How much money did ${pronoun} spend in total?`;
+  let distractors = getDistractors(correct,3,100.00);
+  return buildQuestion(question, correct, distractors, `${cost1.toFixed(2)} + ${cost2.toFixed(2)} = ₹ ${correct.toFixed(2)}`);
+}
+
+function buildQuestionStorySubtraction(){
+  const scenarios = [
+    "spent",
+    "paid for",
+    "bought",
+    "used",
+    "withdrew"
+  ];
+  let names = ["Archana", "Mrs Sinha", "Mrs Saxena", "Isha", "Meenu", "Raj"];
+  let items = ["a notebook", "a hand blender", "a pastry", "groceries", "a t-shirt", "a piggy bank"];
+  let name = names[randomInt(0, names.length -1)];
+  let item = items[randomInt(0, items.length -1)];
+  let initial = randomFloat(100.00, 1000.00, 2);
+  let spent = randomFloat(10.00, initial - 10.00, 2);
+  let correct = parseFloat((initial - spent).toFixed(2));
+  let pronoun = namePronouns[name];
+  let question = `${name} had ₹ ${initial.toFixed(2)}. ${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} ${scenarios[randomInt(0, scenarios.length -1)]} ₹ ${spent.toFixed(2)} for ${item}. How much money is left?`;
+  let distractors = getDistractors(correct,3,100.00);
+  return buildQuestion(question, correct, distractors, `${initial.toFixed(2)} - ${spent.toFixed(2)} = ₹ ${correct.toFixed(2)}`);
+}
+
+// Build question object
+function buildQuestion(question, correctNum, distractors, explanation){
+  let isMC = Math.random() < 0.5;
+  if(isMC){
+    const correctStr = correctNum.toFixed(2);
+    const distractorStrs = distractors.map(n => n.toFixed(2));
+    let options = [correctStr, ...distractorStrs];
+    shuffleArray(options);
+    return {
+      type: "mc",
+      question,
+      explanation,
+      options,
+      correctIndex: options.indexOf(correctStr)
+    };
+  } else {
+    return {
+      type: "text",
+      question,
+      explanation,
+      correctAnswer: correctNum
+    };
+  }
+}
+
+// Build full question set
+let allQuestions = [];
+for(let i=0; i<15; i++){
+  allQuestions.push(buildQuestionAddition());
+}
+for(let i=0; i<15; i++){
+  allQuestions.push(buildQuestionSubtraction());
+}
+for(let i=0; i<10; i++){
+  allQuestions.push(buildQuestionStoryAddition());
+}
+for(let i=0; i<10; i++){
+  allQuestions.push(buildQuestionStorySubtraction());
+}
+shuffleArray(allQuestions);
+let questions = allQuestions.slice(0,50);
+const totalQuestions = 50;
+
+let playerName="";
+let division="";
+let rollNo="";
+let totalTime=30*60;
+let timerInterval=null;
+let currentQuestionIndex=0;
+let score=0;
+let mode="check";
+let userKey = "";
+
+function startQuiz(){
+  hideInfo();
+  const nameInput = document.getElementById("playerName").value.trim();
+  const divisionVal = document.getElementById("division").value;
+  const rollNoVal = document.getElementById("rollNo").value.trim();
+
+  if(!nameInput){
+    showInfo("Please enter your name.");
+    return;
+  }
+  if(!divisionVal){
+    showInfo("Please select your division.");
+    return;
+  }
+  if(!rollNoVal){
+    showInfo("Please enter your roll number.");
+    return;
+  }
+
+  playerName = nameInput;
+  division = divisionVal;
+  rollNo = rollNoVal;
+  userKey = `${division}_${rollNo}`;
+
+  document.getElementById("intro").classList.remove("active");
+  document.getElementById("quiz-area").classList.add("active");
+  startTimer();
+  showQuestion();
+
+  // Initialize or reset user data in Firebase
+  const initialData = {
+    name: playerName,
+    division: division,
+    rollNo: rollNo,
+    score: 0,
+    questionsCompleted: 0,
+    quiz: "money3",
+    timeStarted: new Date().toISOString(),
+    lastAnswered: new Date().toISOString(),
+    totalQuestions: totalQuestions
+  };
+  database.ref(`results/${userKey}`).set(initialData);
+}
+
+function startTimer(){
+  updateTimerUI();
+  timerInterval = setInterval(()=>{
+    totalTime--;
+    if(totalTime <= 0){
+      clearInterval(timerInterval);
+      endQuiz();
+      return;
+    }
+    updateTimerUI();
+  },1000);
+}
+
+function updateTimerUI(){
+  const minutes = Math.floor(totalTime / 60);
+  const seconds = totalTime % 60;
+  document.getElementById("timer").textContent = `Time: ${pad(minutes)}:${pad(seconds)}`;
+}
+
+function showQuestion(){
+  hideInfo();
+  let q = questions[currentQuestionIndex];
+  let answersDiv = document.getElementById("answers");
+  let textboxDiv = document.getElementById("textbox-wrapper");
+  let feedback = document.getElementById("feedback");
+  let explanation = document.getElementById("explanation");
+
+  // Reset
+  feedback.style.display="none";
+  explanation.style.display="none";
+  feedback.textContent="";
+  explanation.textContent="";
+  answersDiv.style.display="none";
+  answersDiv.innerHTML="";
+  textboxDiv.style.display="none";
+  document.getElementById("answerBox").value="";
+
+  document.getElementById("mainBtn").textContent="Check Answer";
+  mode="check";
+
+  document.getElementById("question-count").textContent =
+    "Question " + (currentQuestionIndex+1) + " of " + questions.length;
+  document.getElementById("question-text").innerHTML = q.question;
+
+  let progressPercent = Math.round( (currentQuestionIndex/questions.length)*100 );
+  document.getElementById("progress-fill").style.width = progressPercent + "%";
+
+  // Show MC or text:
+  if(q.type==="mc"){
+    answersDiv.style.display="block";
+    q.options.forEach((opt,i)=>{
+      let label = document.createElement("label");
+      let inp = document.createElement("input");
+      inp.type="radio";
+      inp.name="answer";
+      inp.value=String(i);
+      label.appendChild(inp);
+      label.appendChild(document.createTextNode(" ₹ " + opt));
+      answersDiv.appendChild(label);
+    });
+  } else {
+    textboxDiv.style.display="block";
+  }
+}
+
+function mainButtonClicked(){
+  if(mode==="check"){
+    checkAnswer();
+  } else {
+    nextQuestion();
+  }
+}
+
+function checkAnswer(){
+  hideInfo();
+  let q = questions[currentQuestionIndex];
+  let feedback = document.getElementById("feedback");
+  let explanation = document.getElementById("explanation");
+  let correct = false;
+
+  if(q.type==="mc"){
+    let radios=document.querySelectorAll('input[name="answer"]');
+    let userIndex = null;
+    for(let r of radios){
+      if(r.checked){ 
+        userIndex = parseInt(r.value);
+        break;
+      }
+    }
+    if(userIndex===null){
+      showInfo("Please select an answer.");
+      return;
+    }
+    correct = (userIndex===q.correctIndex);
+  } else {
+    let val = document.getElementById("answerBox").value.trim();
+    if(!val){
+      showInfo("Please type your answer.");
+      return;
+    }
+    correct = (parseFloat(val).toFixed(2) === q.correctAnswer.toFixed(2));
+  }
+
+  if(correct) score += 10;
+
+  feedback.style.display="block";
+  explanation.style.display="block";
+
+  feedback.textContent = correct ? "Correct!" : "Incorrect!";
+  feedback.classList.remove("correct","incorrect");
+  feedback.classList.add(correct ? "correct":"incorrect");
+
+  if(q.type==="mc"){
+    if(!correct){
+      let rightValue = q.options[q.correctIndex];
+      explanation.textContent = `Correct Answer: ₹ ${rightValue}. ${q.explanation}`;
+    } else {
+      explanation.textContent = q.explanation;
+    }
+  } else {
+    if(!correct){
+      explanation.textContent = `Correct Answer: ₹ ${q.correctAnswer.toFixed(2)}. ${q.explanation}`;
+    } else {
+      explanation.textContent = q.explanation;
+    }
+  }
+
+  document.getElementById("scoreboard").textContent = "Score: " + score;
+  document.getElementById("mainBtn").textContent = "Next Question";
+  mode="next";
+
+  // Update score and questionsCompleted in Firebase after each answer
+  const timestamp = new Date().toISOString();
+  const questionsCompleted = currentQuestionIndex + 1;
+  const updateData = {
+    score: score,
+    questionsCompleted: questionsCompleted,
+    lastAnswered: timestamp
+  };
+  database.ref(`results/${userKey}`).update(updateData);
+}
+
+function nextQuestion(){
+  currentQuestionIndex++;
+  if(currentQuestionIndex>=questions.length){
+    endQuiz();
+  } else {
+    showQuestion();
+  }
+}
+
+function endQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById("quiz-area").classList.remove("active");
+  document.getElementById("result-area").classList.add("active");
+  document.getElementById("final-message").textContent = `Well done, ${playerName}!`;
+  document.getElementById("final-score").textContent =
+    `Your Score: ${score} out of ${questions.length*10}`;
+  
+  // Update final result in Firebase
+  const timestamp = new Date().toISOString();
+  const finalResultData = {
+    finalScore: score,
+    timeEnded: timestamp,
+    totalTime: 30*60 - totalTime,
+    questionsCompleted: questions.length
+  };
+  database.ref(`results/${userKey}`).update(finalResultData);
+}
+</script>
+</body>
+</html>
