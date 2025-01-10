@@ -265,7 +265,7 @@ footer {
     <h2 style="font-family:'Roboto', sans-serif; font-size:1.6em; text-align:center;">Welcome!</h2>
     <p>
       Practice addition and subtraction of money.<br>
-      You have <strong>30 minutes</strong> to answer <strong>50 questions</strong>. Good luck!
+      You have <strong>60 minutes</strong> to answer <strong>50 questions</strong>. Good luck!
     </p>
     <div class="input-group">
       <input type="text" id="playerName" placeholder="Your Name" />
@@ -281,7 +281,7 @@ footer {
 
   <div class="quiz-area" id="quiz-area">
     <div class="top-info">
-      <div class="timer" id="timer">Time: 30:00</div>
+      <div class="timer" id="timer">Time: 60:00</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="scoreboard" id="scoreboard">Score: 0</div>
     </div>
@@ -499,7 +499,7 @@ const totalQuestions = 50;
 let playerName="";
 let division="";
 let rollNo="";
-let totalTime=30*60;
+let totalTime=60*60;
 let timerInterval=null;
 let currentQuestionIndex=0;
 let score=0;
@@ -714,7 +714,7 @@ function endQuiz(){
   const finalResultData = {
     finalScore: score,
     timeEnded: timestamp,
-    totalTime: 30*60 - totalTime,
+    totalTime: 60*60 - totalTime,
     questionsCompleted: questions.length
   };
   database.ref(`results/${userKey}`).update(finalResultData);
